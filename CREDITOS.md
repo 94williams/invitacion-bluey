@@ -6,6 +6,8 @@ Las cinco fotografías de ejemplo (pastel, globos, mesa, regalos y dulces) se ge
 
 Personajes y referencias del tema: . Las marcas y personajes pertenecen a sus titulares. La plantilla no se presenta como un producto oficial.
 
+Rediseño: las ilustraciones transparentes locales de Bluey y Bingo provienen de bluey.tv. BLUEY™ y personajes © Ludo Studio, licenciados por BBC Studios Distribution Ltd. Las URLs exactas figuran en `assets/CHARACTERS-SOURCES.md`.
+
 Fuente de titulares: Fredoka. Las fuentes locales de Google Fonts conservan sus licencias SIL OFL en assets/LICENSE-Display.txt y assets/LICENSE-DM-Sans.txt.
 
 La ilustración de portada se generó con ImageGen integrado; archivo assets/hero-v1.webp. Prompt completo en RECURSOS.md.

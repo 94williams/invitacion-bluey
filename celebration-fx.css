@@ -1,0 +1,230 @@
+/* Small, non-interactive accents for the invitation's Keepy Uppy journey. */
+.celebration-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 7;
+  overflow: hidden;
+  overflow: clip;
+  pointer-events: none;
+  contain: layout style;
+}
+
+.travelling-balloon {
+  --balloon-size: 76px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--balloon-size, 76px);
+  height: calc(var(--balloon-size, 76px) * 2.25);
+  visibility: hidden;
+  opacity: .95;
+  pointer-events: none;
+  transform-origin: 50% 35%;
+  will-change: transform;
+}
+
+.travelling-balloon.is-ready { visibility: visible; }
+
+.red-balloon {
+  position: relative;
+  width: 100%;
+  height: calc(var(--balloon-size, 76px) * 1.23);
+  border: 1.5px solid #ac323b;
+  border-radius: 49% 51% 47% 49% / 47% 47% 54% 53%;
+  background: radial-gradient(ellipse at 33% 25%, #ff8586 0, #f85561 31%, #ef414e 67%, #dd3545 100%);
+  box-shadow: inset -5px -5px 0 #c82b3b26, 3px 7px 10px #5b273b12;
+  animation: fx-balloon-bob 3.6s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+.balloon-shine {
+  position: absolute;
+  top: 15%;
+  left: 21%;
+  width: 15%;
+  height: 29%;
+  border-radius: 60%;
+  background: #fff9;
+  transform: rotate(29deg);
+}
+
+.balloon-shine::after {
+  content: '';
+  position: absolute;
+  top: 113%;
+  left: 20%;
+  width: 55%;
+  height: 16%;
+  border-radius: 50%;
+  background: #fff7;
+}
+
+.balloon-knot {
+  position: absolute;
+  top: calc(100% - 1px);
+  left: calc(50% - 5px);
+  width: 10px;
+  height: 9px;
+  background: #e74651;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.balloon-string {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: calc(50% - 11px);
+  width: 22px;
+  height: calc(var(--balloon-size, 76px) * .9);
+  overflow: visible;
+  fill: none;
+  color: #987d80;
+  stroke: #987d80;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  transform-origin: 50% 0;
+  animation: fx-string-sway 3.6s ease-in-out infinite;
+}
+
+.balloon-spark {
+  position: absolute;
+  top: 12%;
+  right: -22px;
+  color: #b18728;
+  font: 400 24px/1 var(--display, sans-serif);
+  animation: fx-small-glint 4.8s ease-in-out infinite;
+}
+
+[data-fx-section] { position: relative; }
+
+.fx-decorations {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  overflow: clip;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+[data-fx-decor].section-spark {
+  position: absolute;
+  z-index: 0;
+  display: block;
+  width: 1em;
+  height: 1em;
+  font: 400 clamp(24px, 3vw, 42px)/1 var(--display, sans-serif);
+  color: var(--blue, #236697);
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 1s ease;
+  animation: fx-section-shimmer 7s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+[data-fx-decor].spark-one {
+  top: 25px;
+  left: clamp(14px, 3vw, 60px);
+  --fx-rotate: -14deg;
+}
+
+[data-fx-decor].spark-two {
+  right: clamp(14px, 3vw, 60px);
+  bottom: 26px;
+  color: #ac7d25;
+  font-size: clamp(20px, 2.5vw, 32px);
+  --fx-rotate: 16deg;
+  animation-delay: -2.2s;
+}
+
+[data-fx-decor].spark-three {
+  top: 31px;
+  right: clamp(18px, 6vw, 100px);
+  font-size: clamp(16px, 2vw, 27px);
+  --fx-rotate: 8deg;
+  animation-delay: -4.1s;
+}
+
+.fx-visible .fx-decorations > [data-fx-decor].section-spark {
+  opacity: .34;
+  animation-play-state: running;
+}
+
+.date-ticket::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 15px;
+  background: linear-gradient(110deg, transparent 36%, #fff0 42%, #ffffff38 49%, #fff0 56%, transparent 64%);
+  background-size: 350% 100%;
+  background-position: 110% 0;
+  pointer-events: none;
+  animation: fx-ticket-shine 11s ease-in-out infinite;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .route-card:hover { box-shadow: 7px 10px 0 #193b5c19; }
+  .memory:hover .photo-caption > span { animation: fx-hover-spark 1.6s ease-in-out infinite; }
+}
+
+@keyframes fx-balloon-bob {
+  0%, 100% { translate: 0 0; rotate: -3deg; }
+  50% { translate: 0 -8px; rotate: 4deg; }
+}
+
+@keyframes fx-string-sway {
+  0%, 100% { rotate: 8deg; }
+  50% { rotate: -9deg; }
+}
+
+@keyframes fx-small-glint {
+  0%, 100% { opacity: .2; scale: .75; rotate: -10deg; }
+  50% { opacity: .7; scale: 1; rotate: 15deg; }
+}
+
+@keyframes fx-section-shimmer {
+  0%, 100% { transform: translateY(0) rotate(var(--fx-rotate, 0deg)) scale(.9); }
+  50% { transform: translateY(-9px) rotate(calc(var(--fx-rotate, 0deg) + 15deg)) scale(1.06); }
+}
+
+@keyframes fx-ticket-shine {
+  0%, 72% { background-position: 110% 0; }
+  93%, 100% { background-position: -10% 0; }
+}
+
+@keyframes fx-hover-spark {
+  0%, 100% { rotate: -6deg; scale: 1; }
+  50% { rotate: 10deg; scale: 1.14; }
+}
+
+.motion-paused .celebration-layer,
+.modal-open .celebration-layer { visibility: hidden; }
+.motion-paused .travelling-balloon,
+.modal-open .travelling-balloon { visibility: hidden; }
+.motion-paused [data-fx-decor].section-spark { animation: none !important; opacity: .24; }
+.motion-paused .date-ticket::after { animation: none !important; background: none; }
+
+@media (max-width: 800px) {
+  .travelling-balloon { --balloon-size: 60px; }
+}
+
+@media (max-width: 600px) {
+  .travelling-balloon { --balloon-size: 46px; opacity: .86; }
+  .red-balloon { border-width: 1px; box-shadow: inset -4px -4px 0 #c82b3b26, 2px 5px 7px #5b273b0e; }
+  .balloon-string { width: 18px; left: calc(50% - 9px); }
+  .balloon-spark { top: 5%; right: -17px; font-size: 19px; }
+  [data-fx-decor].spark-one { top: 15px; left: 10px; font-size: 23px; }
+  [data-fx-decor].spark-two { right: 12px; bottom: 15px; font-size: 22px; }
+  [data-fx-decor].spark-three { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebration-layer { display: none; }
+  [data-fx-decor].section-spark { animation: none !important; transition: none; }
+  .date-ticket::after { animation: none !important; background: none; }
+  .memory:hover .photo-caption > span { animation: none; }
+}
+
+@media print {
+  .celebration-layer, [data-fx-decor].section-spark, .date-ticket::after { display: none !important; }
+}
