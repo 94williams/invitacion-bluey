@@ -4,17 +4,25 @@
   const layer = document.getElementById("celebrationLayer");
   const balloon = document.getElementById("travellingBalloon");
   if (!layer || !balloon) return;
+  const balloons = [...layer.querySelectorAll(".travelling-balloon")].map((element, index) => ({
+    element,
+    route: element.dataset.balloonRoute || "cross",
+    bias: Number(element.dataset.balloonPace) || 1,
+    index,
+    points: [],
+    current: null,
+    active: true,
+    size: 76
+  }));
 
   const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
   const sections = [...document.querySelectorAll("main > section, .site-footer")];
   const decoratedSections = [...document.querySelectorAll(".cover, main > section, .site-footer")];
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const ease = value => value * value * (3 - 2 * value);
-  let points = [];
   let frame = null;
   let needsMeasure = true;
-  let current = null;
-  let viewport = { width: 0, height: 0, size: 76 };
+  const viewport = { width: 0, height: 0 };
 
   // The decorations are isolated from the content and never receive input.
   decoratedSections.forEach(section => {
@@ -51,16 +59,29 @@
   function measure() {
     viewport.width = document.documentElement.clientWidth || window.innerWidth;
     viewport.height = window.innerHeight;
-    viewport.size = parseFloat(window.getComputedStyle(balloon).getPropertyValue("--balloon-size")) || 76;
-    const { width, height, size } = viewport;
+    const tops = sections.map(section => section.getBoundingClientRect().top + window.scrollY);
+    balloons.forEach(state => {
+      const style = window.getComputedStyle(state.element);
+      state.size = parseFloat(style.getPropertyValue("--balloon-size")) || 76;
+      state.active = style.display !== "none";
+      state.current = null;
+      if (state.active) state.points = buildPoints(state, tops);
+    });
+    needsMeasure = false;
+  }
+
+  function buildPoints(state, tops) {
+    const { width, height } = viewport;
+    const size = state.size;
     const margin = width <= 600 ? 7 : 16;
     const left = margin;
     const right = Math.max(left, width - size - margin);
-    const tops = sections.map(section => section.getBoundingClientRect().top + window.scrollY);
     const maxY = Math.max(12, height - size * 2.25 - 14);
-    const safeY = value => clamp(value - size * .61, 12, maxY);
-    let side = right;
-    points = [{ scroll: 0, x: right, y: safeY(height * .32), crossing: false }];
+    const offset = state.route === "cross-reverse" ? (width <= 600 ? -42 : -88)
+      : state.index === 2 ? (width <= 600 ? 46 : 92) : 0;
+    const safeY = value => clamp(value - size * .61 + offset, 12, maxY);
+    let side = state.route === "cross-reverse" ? left : right;
+    const points = [{ scroll: 0, x: side, y: safeY(height * (.32 + state.index * .11)), crossing: false }];
 
     tops.forEach((top, index) => {
       const previousGap = index ? top - tops[index - 1] : height;
@@ -82,17 +103,28 @@
     points.sort((a, b) => a.scroll - b.scroll);
     points.push({ scroll: Math.max(document.documentElement.scrollHeight, points.at(-1).scroll + 1),
       x: side, y: safeY(height * .32), crossing: false });
-    current = null;
-    needsMeasure = false;
+    return points;
   }
 
-  function positionAt(scroll) {
+  function positionAt(state, scroll) {
+    if (state.route === "edge-left" || state.route === "edge-right") {
+      const { width, height } = viewport;
+      const left = width <= 600 ? 7 : 16;
+      const wave = Math.sin(scroll / (780 + state.index * 110) + state.index) * .07;
+      const base = state.route === "edge-left" ? .2 : .73;
+      return {
+        x: state.route === "edge-left" ? left : Math.max(left, width - state.size - left),
+        y: clamp(height * (base + wave), 12, Math.max(12, height - state.size * 2.25 - 14)),
+        angle: wave * 65
+      };
+    }
+    const points = state.points;
     let index = 1;
     while (index < points.length - 1 && scroll > points[index].scroll) index++;
     const from = points[index - 1];
     const to = points[index];
     const progress = clamp((scroll - from.scroll) / Math.max(1, to.scroll - from.scroll), 0, 1);
-    const eased = ease(progress);
+    const eased = ease(to.crossing ? Math.pow(progress, state.bias) : progress);
     return {
       x: from.x + (to.x - from.x) * eased,
       y: from.y + (to.y - from.y) * (to.crossing ? progress : eased),
@@ -104,15 +136,22 @@
     frame = null;
     if (!motionAllowed()) return;
     if (needsMeasure) measure();
-    const target = positionAt(window.scrollY);
-    if (!current) current = { ...target };
-    current.x += (target.x - current.x) * .16;
-    current.y += (target.y - current.y) * .16;
-    current.angle += (target.angle - current.angle) * .12;
-    balloon.style.transform = `translate3d(${current.x.toFixed(2)}px, ${current.y.toFixed(2)}px, 0) rotate(${current.angle.toFixed(2)}deg)`;
-    balloon.classList.add("is-ready");
-    const distance = Math.abs(target.x - current.x) + Math.abs(target.y - current.y) + Math.abs(target.angle - current.angle);
-    if (distance > .15) frame = window.requestAnimationFrame(render);
+    let unsettled = false;
+    balloons.forEach(state => {
+      if (!state.active) return;
+      const target = positionAt(state, window.scrollY);
+      if (!state.current) state.current = { ...target };
+      const current = state.current;
+      const smoothing = .16 + state.index * .012;
+      current.x += (target.x - current.x) * smoothing;
+      current.y += (target.y - current.y) * smoothing;
+      current.angle += (target.angle - current.angle) * .12;
+      state.element.style.transform = `translate3d(${current.x.toFixed(2)}px, ${current.y.toFixed(2)}px, 0) rotate(${current.angle.toFixed(2)}deg)`;
+      state.element.classList.add("is-ready");
+      const distance = Math.abs(target.x - current.x) + Math.abs(target.y - current.y) + Math.abs(target.angle - current.angle);
+      if (distance > .15) unsettled = true;
+    });
+    if (unsettled) frame = window.requestAnimationFrame(render);
   }
 
   function schedule() {

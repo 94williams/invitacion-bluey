@@ -25,15 +25,71 @@
 
 .travelling-balloon.is-ready { visibility: visible; }
 
+.balloon-blue {
+  --balloon-size: 58px;
+  --balloon-border: #337ca9;
+  --balloon-highlight: #b2e4ff;
+  --balloon-light: #75c7f2;
+  --balloon-body: #47a9df;
+  --balloon-dark: #328fca;
+  --balloon-shade: #246c9b26;
+  --balloon-knot: #3999d2;
+  --balloon-duration: 4.4s;
+  --balloon-delay: -1.3s;
+  opacity: .9;
+}
+
+.balloon-yellow {
+  --balloon-size: 50px;
+  --balloon-border: #be8f32;
+  --balloon-highlight: #fff4b7;
+  --balloon-light: #ffe69a;
+  --balloon-body: #ffd66d;
+  --balloon-dark: #efbd50;
+  --balloon-shade: #bb892b26;
+  --balloon-knot: #edc05a;
+  --balloon-duration: 5.2s;
+  --balloon-delay: -2.6s;
+  opacity: .88;
+}
+
+.balloon-mint {
+  --balloon-size: 40px;
+  --balloon-border: #5c9988;
+  --balloon-highlight: #d8f8e7;
+  --balloon-light: #b8e8d1;
+  --balloon-body: #8ed1b7;
+  --balloon-dark: #71b99f;
+  --balloon-shade: #3e8a7526;
+  --balloon-knot: #79bfa6;
+  --balloon-duration: 6s;
+  --balloon-delay: -3.8s;
+  opacity: .82;
+}
+
+.balloon-lilac {
+  --balloon-size: 44px;
+  --balloon-border: #9574ad;
+  --balloon-highlight: #eee0ff;
+  --balloon-light: #d9bdf4;
+  --balloon-body: #bd98e1;
+  --balloon-dark: #aa83d0;
+  --balloon-shade: #76529b26;
+  --balloon-knot: #b18bd5;
+  --balloon-duration: 4.8s;
+  --balloon-delay: -2s;
+  opacity: .84;
+}
+
 .red-balloon {
   position: relative;
   width: 100%;
   height: calc(var(--balloon-size, 76px) * 1.23);
-  border: 1.5px solid #ac323b;
+  border: 1.5px solid var(--balloon-border, #ac323b);
   border-radius: 49% 51% 47% 49% / 47% 47% 54% 53%;
-  background: radial-gradient(ellipse at 33% 25%, #ff8586 0, #f85561 31%, #ef414e 67%, #dd3545 100%);
-  box-shadow: inset -5px -5px 0 #c82b3b26, 3px 7px 10px #5b273b12;
-  animation: fx-balloon-bob 3.6s ease-in-out infinite;
+  background: radial-gradient(ellipse at 33% 25%, var(--balloon-highlight, #ff8586) 0, var(--balloon-light, #f85561) 31%, var(--balloon-body, #ef414e) 67%, var(--balloon-dark, #dd3545) 100%);
+  box-shadow: inset -5px -5px 0 var(--balloon-shade, #c82b3b26), 3px 7px 10px #5b273b12;
+  animation: fx-balloon-bob var(--balloon-duration, 3.6s) ease-in-out var(--balloon-delay, 0s) infinite;
   transform-origin: 50% 100%;
 }
 
@@ -65,7 +121,7 @@
   left: calc(50% - 5px);
   width: 10px;
   height: 9px;
-  background: #e74651;
+  background: var(--balloon-knot, #e74651);
   clip-path: polygon(50% 0, 100% 100%, 0 100%);
 }
 
@@ -82,7 +138,7 @@
   stroke-width: 1.5;
   stroke-linecap: round;
   transform-origin: 50% 0;
-  animation: fx-string-sway 3.6s ease-in-out infinite;
+  animation: fx-string-sway var(--balloon-duration, 3.6s) ease-in-out var(--balloon-delay, 0s) infinite;
 }
 
 .balloon-spark {
@@ -206,11 +262,18 @@
 
 @media (max-width: 800px) {
   .travelling-balloon { --balloon-size: 60px; }
+  .balloon-blue { --balloon-size: 46px; }
+  .balloon-yellow { --balloon-size: 40px; }
+  .balloon-mint { --balloon-size: 34px; }
+  .balloon-lilac { --balloon-size: 37px; }
 }
 
 @media (max-width: 600px) {
   .travelling-balloon { --balloon-size: 46px; opacity: .86; }
-  .red-balloon { border-width: 1px; box-shadow: inset -4px -4px 0 #c82b3b26, 2px 5px 7px #5b273b0e; }
+  .balloon-blue { --balloon-size: 34px; opacity: .84; }
+  .balloon-yellow { --balloon-size: 30px; opacity: .82; }
+  .balloon-mint, .balloon-lilac { display: none; }
+  .red-balloon { border-width: 1px; box-shadow: inset -4px -4px 0 var(--balloon-shade, #c82b3b26), 2px 5px 7px #5b273b0e; }
   .balloon-string { width: 18px; left: calc(50% - 9px); }
   .balloon-spark { top: 5%; right: -17px; font-size: 19px; }
   [data-fx-decor].spark-one { top: 15px; left: 10px; font-size: 23px; }

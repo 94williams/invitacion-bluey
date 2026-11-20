@@ -27,6 +27,6 @@ Publicación independiente: copia **todo el contenido de esta carpeta**, incluid
 
 El botón «Pausar animaciones» del pie permite detener el movimiento. La invitación también respeta la preferencia de movimiento reducido del dispositivo y detiene la animación de recorrido fuera de pantalla.
 
-`celebration-fx.css` y `celebration-fx.js` añaden el globo rojo que viaja de un lado a otro al recorrer las secciones, destellos suaves y un brillo en el boleto. El globo cruza sobre las separaciones entre secciones; se oculta al pausar, al abrir una foto o al escribir en el formulario.
+`celebration-fx.css` y `celebration-fx.js` añaden cinco globos: rojo, azul, amarillo, menta y lila, con tamaños y ritmos distintos. Tres cruzan las separaciones entre secciones y dos flotan en los bordes. En celular se muestran tres globos. Comparten un solo ciclo de animación y se ocultan al pausar, al abrir una foto o al escribir en el formulario. También se incluyen destellos suaves y un brillo en el boleto.
 
 El bloque «¿Te gustó esta invitación?» usa el mismo enlace de WhatsApp de negocio de la invitación de Bob Esponja: `https://wa.me/message/P7RPHXQSCT34P1`. Ese enlace es independiente de los contactos de confirmación del festejo.
